@@ -24,7 +24,7 @@ public class EmployeeController {
         return employeeService.add(firstName, lastName);
     }
 
-    @GetMapping(path = "/get")
+    @GetMapping(path = "/find")
     public Employee findEmployee(@RequestParam String  firstName, @RequestParam String lastName) {
         return employeeService.find(firstName, lastName);
     }
@@ -34,7 +34,7 @@ public class EmployeeController {
         return employeeService.remove(firstName, lastName);
     }
 
-    @GetMapping(path = "/getAll")
+    @GetMapping(path = "/findAll")
     public ArrayList<Employee> getEmployees() {
         return employeeService.getAll();
     }
