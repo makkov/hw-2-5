@@ -3,9 +3,10 @@ package org.skypro.hw.controller;
 import org.skypro.hw.entity.Employee;
 import org.skypro.hw.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -20,22 +21,22 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/add")
-    public Employee addEmployee(@RequestParam String  firstName, @RequestParam String lastName) {
+    public Employee addEmployee(@RequestParam String firstName, @RequestParam String lastName) {
         return employeeService.add(firstName, lastName);
     }
 
     @GetMapping(path = "/find")
-    public Employee findEmployee(@RequestParam String  firstName, @RequestParam String lastName) {
+    public Employee findEmployee(@RequestParam String firstName, @RequestParam String lastName) {
         return employeeService.find(firstName, lastName);
     }
 
     @GetMapping(path = "/remove")
-    public Employee removeEmployee(@RequestParam String  firstName, @RequestParam String lastName) {
+    public Employee removeEmployee(@RequestParam String firstName, @RequestParam String lastName) {
         return employeeService.remove(firstName, lastName);
     }
 
     @GetMapping(path = "/findAll")
-    public ArrayList<Employee> getEmployees() {
+    public Employee[] getEmployees() {
         return employeeService.getAll();
     }
 }

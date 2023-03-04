@@ -3,24 +3,31 @@ package org.skypro.hw.service;
 import org.skypro.hw.entity.Employee;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class EmployeeService {
 
-    private final ArrayList<Employee> employees = new ArrayList<>();
+    private final int MAX_EMPLOYEES_COUNT = 2;
+
+    private final Employee[] employees = new Employee[MAX_EMPLOYEES_COUNT];
 
     public Employee add(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
-        employees.add(employee);
+
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] == null) {
+                employees[i] = employee;
+                break;
+            }
+        }
+
         return employee;
     }
 
     public Employee find(String firstName, String lastName) {
         Employee employee = null;
-        for (Employee value : employees) {
-            if (firstName.equals(value.getFirstName()) && lastName.equals(value.getLastName())) {
-                employee = value;
+        for (Employee e : employees) {
+            if (e != null && firstName.equals(e.getFirstName()) && lastName.equals(e.getLastName())) {
+                employee = e;
             }
         }
         return employee;
@@ -28,11 +35,17 @@ public class EmployeeService {
 
     public Employee remove(String firstName, String lastName) {
         Employee employee = find(firstName, lastName);
-        employees.remove(find(firstName, lastName));
-            return employee;
+
+        for (int i = 0; i < employees.length; i++) {
+            if (employees[i] != null && employees[i].equals(employee)) {
+                employees[i] = null;
+            }
+        }
+
+        return employee;
     }
 
-    public ArrayList<Employee> getAll() {
+    public Employee[] getAll() {
         return employees;
     }
 }
