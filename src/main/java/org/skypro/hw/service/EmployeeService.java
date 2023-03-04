@@ -13,6 +13,10 @@ public class EmployeeService {
     public Employee add(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName);
 
+        if (employees[MAX_EMPLOYEES_COUNT - 1] != null) {
+            return null;
+        }
+
         for (int i = 0; i < employees.length; i++) {
             if (employees[i] == null) {
                 employees[i] = employee;
