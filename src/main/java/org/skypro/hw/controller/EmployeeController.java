@@ -1,17 +1,38 @@
 package org.skypro.hw.controller;
 
 import org.skypro.hw.entity.Employee;
+import org.skypro.hw.exception.EmployeeAlreadyAddedException;
+import org.skypro.hw.exception.EmployeeNotFoundException;
+import org.skypro.hw.exception.EmployeeStorageIsFullException;
 import org.skypro.hw.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmployeeStorageIsFullException.class)
+    public String handleException(EmployeeStorageIsFullException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmployeeAlreadyAddedException.class)
+    public String handleException(EmployeeAlreadyAddedException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public String handleException(EmployeeNotFoundException e) {
+        return String.format("%s EmployeeNotFoundException %s", HttpStatus.NOT_FOUND.value(), e.getMessage());
+    }
 
     private final EmployeeService employeeService;
 
@@ -36,7 +57,7 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/findAll")
-    public Employee[] getEmployees() {
+    public List<Employee> getEmployees() {
         return employeeService.getAll();
     }
 }
