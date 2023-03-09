@@ -6,74 +6,64 @@ import org.skypro.hw.exception.EmployeeNotFoundException;
 import org.skypro.hw.exception.EmployeeStorageIsFullException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class EmployeeService {
 
     private final int MAX_EMPLOYEES_COUNT = 2;
 
-    private final List<Employee> employees = new ArrayList<>();
+    private final Map<Integer, Employee> employeeByHashCode = new HashMap<>();
 
     public Employee add(String firstName, String lastName) {
 
-        if (employees.size() == MAX_EMPLOYEES_COUNT) {
-            throw new EmployeeStorageIsFullException("Массив сотрудников переполнен");
+
+        if (employeeByHashCode.size() == MAX_EMPLOYEES_COUNT) {
+            throw new EmployeeStorageIsFullException("Хранилище сотрудников переполнено");
+        }
+
+        int employeeKey = getEmployeeKey(firstName, lastName);
+
+        if (employeeByHashCode.containsKey(employeeKey)) {
+            throw new EmployeeAlreadyAddedException("В хранилище уже есть такой сотрудник");
         }
 
         Employee employee = new Employee(firstName, lastName);
 
-        if (employees.contains(employee)) {
-            throw new EmployeeAlreadyAddedException("В массиве уже есть такой сотрудник");
-        }
-
-        employees.add(employee);
-
-//        for (int i = 0; i < employees.size(); i++) {
-//
-//            if (employees[i] != null && employees[i].equals(employee)) {
-//                throw new EmployeeAlreadyAddedException("В массиве уже есть такой сотрудник");
-//            }
-//
-//            if (employees[i] == null) {
-//                employees[i] = employee;
-//                break;
-//            }
-//        }
+        employeeByHashCode.put(employeeKey, employee);
 
         return employee;
     }
 
     public Employee find(String firstName, String lastName) {
-        Employee employee = null;
-
-        for (Employee e : employees) {
-            if (e != null && firstName.equals(e.getFirstName()) && lastName.equals(e.getLastName())) {
-                employee = e;
-            }
-        }
-
-        if (employee == null) {
-            throw new EmployeeNotFoundException("Сотрудник не найден");
-        }
-
+        int employeeHashCode = getEmployeeKey(firstName, lastName);
+        Employee employee = employeeByHashCode.get(employeeHashCode);
+        presentCheck(employee);
         return employee;
     }
 
     public Employee remove(String firstName, String lastName) {
-        Employee employee = find(firstName, lastName);
-
-        for (Employee e : employees) {
-            if (e.equals(employee)) {
-                return e;
-            }
-        }
-
+        int employeeHashCode = getEmployeeKey(firstName, lastName);
+        Employee employee = employeeByHashCode.remove(employeeHashCode);
+        presentCheck(employee);
         return employee;
     }
 
     public List<Employee> getAll() {
-        return employees;
+        return employeeByHashCode.values()
+                .stream().toList();
+    }
+
+    private int getEmployeeKey(String firstName, String lastName) {
+        return Objects.hash(firstName, lastName);
+    }
+
+    private void presentCheck(Employee employee) {
+        if (employee == null) {
+            throw new EmployeeNotFoundException("Сотрудник не найден");
+        }
     }
 }
