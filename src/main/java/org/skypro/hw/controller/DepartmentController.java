@@ -1,12 +1,11 @@
 package org.skypro.hw.controller;
 
 import org.skypro.hw.entity.Employee;
+import org.skypro.hw.exception.DepartmentSearchException;
 import org.skypro.hw.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,12 @@ public class DepartmentController {
     @Autowired
     public DepartmentController(DepartmentService departmentService) {
         this.departmentService = departmentService;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DepartmentSearchException.class)
+    public String handleException(DepartmentSearchException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
     @GetMapping(path = "/max-salary")

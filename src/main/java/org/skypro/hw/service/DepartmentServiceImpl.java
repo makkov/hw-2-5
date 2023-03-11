@@ -1,10 +1,14 @@
 package org.skypro.hw.service;
 
 import org.skypro.hw.entity.Employee;
+import org.skypro.hw.exception.DepartmentSearchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -18,76 +22,27 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Employee getEmployeeWithMinSalary(int departmentId) {
-        List<Employee> allEmployees = employeeService.getAll();
-        float minSalary = Float.MAX_VALUE;
-        Employee employeeInDepartmentWithMinSalary = null;
-
-        for (Employee e : allEmployees) {
-            if (e.getDepartment().getId() == departmentId && e.getSalary() < minSalary) {
-                minSalary = e.getSalary();
-                employeeInDepartmentWithMinSalary = e;
-            }
-        }
-
-        return employeeInDepartmentWithMinSalary;
+        return employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartment().getId() == departmentId)
+                .min(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new DepartmentSearchException("Департамент не найден"));
     }
 
     @Override
     public Employee getEmployeeWithMaxSalary(int departmentId) {
-        List<Employee> allEmployees = employeeService.getAll();
-        float maxSalary = Float.MIN_VALUE;
-        Employee employeeInDepartmentWithMaxSalary = null;
-
-        for (Employee e : allEmployees) {
-            if (e.getDepartment().getId() == departmentId && e.getSalary() > maxSalary) {
-                maxSalary = e.getSalary();
-                employeeInDepartmentWithMaxSalary = e;
-            }
-        }
-
-        return employeeInDepartmentWithMaxSalary;
+        return employeeService.getAll().stream()
+                .filter(employee -> employee.getDepartment().getId() == departmentId)
+                .max(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new DepartmentSearchException("Департамент не найден"));
     }
 
     @Override
     public Map<String, List<Employee>> getAll(Integer departmentId) {
-        List<Employee> allEmployees = employeeService.getAll();
-
-        if (departmentId == null) {
-            return groupEmployeeByDepartment(allEmployees);
-        }
-
-        List<Employee> result = new ArrayList<>();
-        for (Employee e : allEmployees) {
-            if (e.getDepartment().getId() == departmentId) {
-                result.add(e);
-            }
-        }
-        return groupEmployeeByDepartment(result);
+        return employeeService.getAll().stream()
+                .filter(employee -> departmentId == null || employee.getDepartment().getId() == departmentId)
+                .collect(Collectors.groupingBy(
+                        employee -> employee.getDepartment().getName(),
+                        Collectors.mapping(e -> e, Collectors.toList()))
+                );
     }
-
-    private Map<String, List<Employee>> groupEmployeeByDepartment(List<Employee> employees) {
-        Map<String, List<Employee>> employeesByDepartment = new HashMap<>();
-        for (Employee e : employees) {
-            String departmentName = e.getDepartment().getName();
-            if (employeesByDepartment.containsKey(departmentName)) {
-                List<Employee> newList = employeesByDepartment.get(departmentName);
-                newList.add(e);
-                employeesByDepartment.put(departmentName, newList);
-            } else {
-                List<Employee> newList = new ArrayList<>();
-                newList.add(e);
-                employeesByDepartment.put(departmentName, newList);
-            }
-        }
-
-        return employeesByDepartment;
-    }
-
-//    public float getTotalSalary() {
-//        return 0;
-//    }
-//
-//    public float getAverageSalary() {
-//        return 0;
-//    }
 }
