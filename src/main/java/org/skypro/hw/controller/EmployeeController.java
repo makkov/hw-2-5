@@ -5,6 +5,7 @@ import org.skypro.hw.exception.EmployeeAlreadyAddedException;
 import org.skypro.hw.exception.EmployeeNotFoundException;
 import org.skypro.hw.exception.EmployeeStorageIsFullException;
 import org.skypro.hw.service.EmployeeService;
+import org.skypro.hw.service.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
+
+    private final EmployeeService employeeService;
+
+    @Autowired
+    public EmployeeController(EmployeeServiceImpl employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmployeeStorageIsFullException.class)
@@ -32,13 +40,6 @@ public class EmployeeController {
     @ExceptionHandler(EmployeeNotFoundException.class)
     public String handleException(EmployeeNotFoundException e) {
         return String.format("%s EmployeeNotFoundException %s", HttpStatus.NOT_FOUND.value(), e.getMessage());
-    }
-
-    private final EmployeeService employeeService;
-
-    @Autowired
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
     }
 
     @GetMapping(path = "/add")
