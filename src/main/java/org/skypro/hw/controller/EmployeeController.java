@@ -4,6 +4,7 @@ import org.skypro.hw.entity.Employee;
 import org.skypro.hw.exception.EmployeeAlreadyAddedException;
 import org.skypro.hw.exception.EmployeeNotFoundException;
 import org.skypro.hw.exception.EmployeeStorageIsFullException;
+import org.skypro.hw.exception.WrongEmployeeDataException;
 import org.skypro.hw.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,12 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmployeeAlreadyAddedException.class)
     public String handleException(EmployeeAlreadyAddedException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(WrongEmployeeDataException.class)
+    public String handleException(WrongEmployeeDataException e) {
         return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
