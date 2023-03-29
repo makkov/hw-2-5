@@ -18,30 +18,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private static List<Employee> employees = new ArrayList<>();
 
-//    static {
-//        Employee accounting1 = new Employee("Ольга", "Иванова", 10700f, DEPARTMENT_BY_ID.get(1));
-//        Employee accounting2 = new Employee("Иван", "Олегов", 10200f, DEPARTMENT_BY_ID.get(1));
-//
-//        Employee it1 = new Employee("Петр", "Елкин", 200f, DEPARTMENT_BY_ID.get(2));
-//        Employee it2 = new Employee("Алексей", "Снигирь", 10211, DEPARTMENT_BY_ID.get(2));
-//        Employee it3 = new Employee("Мария", "Петрова", 99999, DEPARTMENT_BY_ID.get(2));
-//
-//        Employee support1 = new Employee("Геннадий", "Хелпов", 9900, DEPARTMENT_BY_ID.get(3));
-//        Employee support2 = new Employee("Мария", "Сапортова", 9900, DEPARTMENT_BY_ID.get(3));
-//        Employee support3 = new Employee("Евгений", "Зинин", 9900, DEPARTMENT_BY_ID.get(3));
-//        Employee support4 = new Employee("Олеся", "Черненко", 9900, DEPARTMENT_BY_ID.get(3));
-//
-//        employees.add(accounting1);
-//        employees.add(accounting2);
-//        employees.add(it1);
-//        employees.add(it2);
-//        employees.add(it3);
-//        employees.add(support1);
-//        employees.add(support2);
-//        employees.add(support3);
-//        employees.add(support4);
-//    }
-
     @Override
     public Employee add(String firstName, String lastName, float salary, int departmentId) {
 
