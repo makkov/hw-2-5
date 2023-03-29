@@ -15,8 +15,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private final EmployeeService employeeService;
 
-    @Autowired
-    public DepartmentServiceImpl(EmployeeServiceImpl employeeService) {
+    public DepartmentServiceImpl(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
