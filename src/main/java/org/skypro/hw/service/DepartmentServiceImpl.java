@@ -2,7 +2,6 @@ package org.skypro.hw.service;
 
 import org.skypro.hw.entity.Employee;
 import org.skypro.hw.exception.DepartmentSearchException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
